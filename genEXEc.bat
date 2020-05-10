@@ -3,7 +3,8 @@ rmdir /S /Q __pycache__
 rmdir /S /Q build
 rmdir /S /Q dist
 del reverse_shell.spec
-c:\Python36\Scripts\pyinstaller --onefile --noconsole reverse_shell.py
+Rem c:\Python38\Scripts\pyinstaller --onefile --noconsole reverse_shell.py
+c:\Python38\Scripts\pyinstaller --onefile reverse_shell.py
 cd dist
 reverse_shell.exe
 cd ..

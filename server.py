@@ -11,6 +11,8 @@ PORT = 54321
 
 
 def reliable_send(_target, _cmd):
+	if type(_cmd) is bytes:
+		_cmd = _cmd.decode('UTF-8')
 	json_data = json.dumps(_cmd)
 	_target.sendall(json_data.encode('UTF-8'))
 

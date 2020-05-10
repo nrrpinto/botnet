@@ -34,9 +34,14 @@ def shell(_s, _target, _addr):
 			_s.close()
 			exit(1)
 			break
+		elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:
+			# reliable_send(_target, 'pwd')
+			# result = reliable_recv(_target)
+			# print('Changed to directory: ', result)
+			continue
 		else:
 			result = reliable_recv(_target)
-			print('Received Message: ', result)
+			print('------------------\n', result, '------------------\n')
 
 
 def server():

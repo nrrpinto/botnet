@@ -35,7 +35,7 @@ def reliable_recv(_s):
 
 def is_admin():
     try:
-        temp = os.listdir([os.sep.join(os.environ.get('SystemRoot', 'C:\\windows'), 'temp')])
+        temp = os.listdir(os.sep.join([os.environ.get('SystemRoot', 'C:\\windows'), 'temp']))
     except:
         return False
     else:

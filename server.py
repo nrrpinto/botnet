@@ -71,7 +71,7 @@ def shell(_s, _target, _addr):
                 sc.close()
         else:
             result = reliable_recv(_target)
-            print('------------------\n', result, '------------------\n')
+            print('------------------\n', result, '\n------------------\n')
 
 
 def server():

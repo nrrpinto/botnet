@@ -38,10 +38,9 @@ def shell(_s, _target, _addr):
         reliable_send(_target, cmd)
         if cmd == 'q':
             print(colored('[-] You decided to exit', 'red'))
-            _target.close()
-            _s.close()
-            exit(0)
             break
+            # _target.close()
+            # _s.close()
         elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:
             # reliable_send(_target, 'pwd') # if linux
             # reliable_send(_target, 'cd')  # if windows

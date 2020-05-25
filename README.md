@@ -6,7 +6,7 @@ Please see below how to set it up.
 
 * This is a POC of a botnet programmed in Python3. I developed this following the steps of the UDEMY course "Coding Botnet Backdoor in Python for Ethical Hacking" by Aleksa Tamburkovski. While throught the training course video the instructions were in python2, I followed it but implementing it in python3. My version has some little differences from the course version, like additional persistence, different way to present the messages and menus, small difference on how to manage the reliable data transfer.
 * Version 0.1
-* [Learn Markdown](https://www.udemy.com/course/coding-botnet-backdoor-in-python-for-ethical-hacking/)
+* [Coding Botnet Backdoor in Python for Ethical Hacking](https://www.udemy.com/course/coding-botnet-backdoor-in-python-for-ethical-hacking/)
 
 ### How do I get set up? ###
 
